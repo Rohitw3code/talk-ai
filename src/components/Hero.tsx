@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Upload, MessageSquare, Code, Cloud, Brain, Image, Zap } from 'lucide-react';
 import Button from './ui/Button';
 import FeatureCard from './ui/FeatureCard';
@@ -43,6 +44,8 @@ const features = [
 ];
 
 export default function Hero() {
+  const navigate = useNavigate();
+
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-background via-background/95 to-background/90 pt-16 overflow-hidden">
       <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&q=80')] 
@@ -79,6 +82,7 @@ export default function Hero() {
               icon={MessageSquare}
               className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 
                 hover:to-purple-600/90 relative group w-full sm:w-auto"
+              onClick={() => navigate('/chat')}
             >
               <span className="absolute -inset-0.5 bg-gradient-to-r from-primary to-purple-600 
                 blur opacity-30 group-hover:opacity-50 transition duration-200" />
