@@ -1,0 +1,53 @@
+.model-selector-container {
+  @apply inline-flex p-1 bg-card/30 dark:bg-card/20 backdrop-blur-sm rounded-xl 
+    border border-foreground/5 transition-all duration-300;
+}
+
+.model-button {
+  @apply flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all 
+    duration-300 relative overflow-hidden;
+}
+
+.model-button:not(.selected) {
+  @apply text-muted-foreground hover:text-foreground;
+}
+
+.model-button.selected {
+  @apply bg-background dark:bg-background/50 shadow-md text-white 
+    bg-gradient-to-r scale-105;
+  background-image: var(--model-gradient);
+}
+
+.model-button.animating {
+  animation: pulse 0.6s ease-out;
+}
+
+.model-icon {
+  @apply w-4 h-4 mr-2 transition-transform duration-300;
+}
+
+.selected .model-icon {
+  @apply scale-110;
+}
+
+.model-name {
+  @apply relative z-10;
+}
+
+.model-glow {
+  @apply absolute inset-0 opacity-0;
+  background: var(--model-gradient);
+  filter: blur(20px);
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}

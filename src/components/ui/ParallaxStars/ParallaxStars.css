@@ -1,0 +1,40 @@
+.stars-container {
+  @apply fixed inset-0 pointer-events-none overflow-hidden;
+  perspective: 1000px;
+}
+
+.stars {
+  @apply absolute inset-0;
+  background: transparent;
+  transform-style: preserve-3d;
+}
+
+.stars::after {
+  content: "";
+  @apply absolute inset-0;
+  background-image: radial-gradient(2px 2px at var(--star-x) var(--star-y),
+    rgba(255, 255, 255, 0.3),
+    transparent 100%);
+  animation: twinkle var(--twinkle-duration) ease-in-out infinite;
+}
+
+.stars-1::after {
+  --star-size: 2px;
+  --star-count: 100;
+  background-size: var(--star-size) var(--star-size);
+  --twinkle-duration: 4s;
+}
+
+.stars-2::after {
+  --star-size: 3px;
+  --star-count: 75;
+  background-size: var(--star-size) var(--star-size);
+  --twinkle-duration: 5s;
+}
+
+.stars-3::after {
+  --star-size: 4px;
+  --star-count: 50;
+  background-size: var(--star-size) var(--star-size);
+  --twinkle-duration: 6s;
+}
