@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './styles/animations.css';
+
+@layer base {
+  :root {
+    --background: 230 50% 98%;
+    --foreground: 222.2 84% 4.9%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    
+    --primary: 266 100% 50%;
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    
+    --accent: 266 100% 50%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --neon: 266 100% 50%;
+  }
+
+  .dark {
+    --background: 230 50% 2%;
+    --foreground: 210 40% 98%;
+    
+    --card: 230 50% 3%;
+    --card-foreground: 210 40% 98%;
+    
+    --primary: 266 100% 60%;
+    --primary-foreground: 222.2 84% 4.9%;
+    
+    --secondary: 230 50% 8%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 230 50% 10%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --accent: 266 100% 60%;
+    --accent-foreground: 210 40% 98%;
+
+    --neon: 266 100% 60%;
+  }
+}
+
+body {
+  @apply bg-background text-foreground antialiased transition-colors duration-300;
+}
+
+/* Only apply neon glow in dark mode */
+.neon-glow {
+  @apply font-semibold;
+}
+
+.dark .neon-glow {
+  text-shadow: 0 0 10px hsl(var(--neon) / 0.5),
+               0 0 20px hsl(var(--neon) / 0.3),
+               0 0 30px hsl(var(--neon) / 0.2);
+}
+
+.card-3d {
+  transform-style: preserve-3d;
+  transform: perspective(1000px);
+}
+
+.card-3d-content {
+  transform: translateZ(20px);
+  transform-style: preserve-3d;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .dark .neon-glow {
+    text-shadow: 0 0 5px hsl(var(--neon) / 0.5),
+                 0 0 10px hsl(var(--neon) / 0.3);
+  }
+}
