@@ -49,9 +49,10 @@ export default function DocumentPreview({ file, onClose }: DocumentPreviewProps)
         </div>
         <button 
           onClick={onClose}
-          className="p-1 hover:bg-foreground/5 rounded-lg"
+          className="p-2 hover:bg-foreground/5 rounded-lg transition-colors group md:block"
+          aria-label="Close preview"
         >
-          <X className="w-5 h-5" />
+          <X className="w-5 h-5 text-muted-foreground group-hover:text-foreground" />
         </button>
       </div>
       {renderPreview()}

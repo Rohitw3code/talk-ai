@@ -10,7 +10,7 @@ export default function MobileOverlay({ isVisible, onClose }: MobileOverlayProps
 
   return (
     <div 
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
+      className="fixed inset-0 bg-black/20 z-40 md:hidden"
       onClick={onClose}
       aria-hidden="true"
     />

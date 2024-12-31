@@ -1,6 +1,8 @@
 import React from 'react';
 import { MessageSquare, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import RecentChats from './RecentChats';
+import SidebarSettings from './SidebarSettings';
+import ModelSelector from './ModelSelector';
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -20,7 +22,7 @@ export default function ChatSidebar({
       <div 
         className={`
           fixed inset-y-0 left-0 z-40 bg-background border-r border-foreground/10
-          transition-all duration-300 ease-in-out
+          transition-all duration-300 ease-in-out flex flex-col
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           ${isCollapsed ? 'w-16' : 'w-64'}
           md:relative md:translate-x-0
@@ -53,14 +55,21 @@ export default function ChatSidebar({
           </button>
         </div>
         
-        <div className="p-4">
-          <button className={`w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg p-3 flex items-center justify-center gap-2 mb-4 ${
-            isCollapsed ? 'px-2' : 'px-3'
-          }`}>
+        <div className="flex-1 flex flex-col p-4 overflow-y-auto">
+          <button className={`w-full bg-primary hover:bg-primary/90 text-primary-foreground 
+            rounded-lg p-3 flex items-center justify-center gap-2 mb-4 ${isCollapsed ? 'px-2' : 'px-3'}`}
+          >
             <MessageSquare className="w-4 h-4" />
             {!isCollapsed && <span>New Chat</span>}
           </button>
-          <RecentChats isCollapsed={isCollapsed} />
+
+          {!isCollapsed && <ModelSelector />}
+          
+          <div className="mt-4">
+            <RecentChats isCollapsed={isCollapsed} />
+          </div>
+          
+          {!isCollapsed && <SidebarSettings />}
         </div>
       </div>
 

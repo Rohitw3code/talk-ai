@@ -2,6 +2,7 @@ import React from 'react';
 import DocumentPreview from './DocumentPreview';
 import DocumentUpload from './DocumentUpload';
 import ResizeHandle from './ResizeHandle';
+import MobileCloseButton from './buttons/MobileCloseButton';
 
 interface DocumentPanelProps {
   selectedFile: File | null;
@@ -20,10 +21,13 @@ export default function DocumentPanel({
     <div className="flex-1 flex border-r border-foreground/10 bg-background/95 backdrop-blur-sm" onClick={(e) => e.stopPropagation()}>
       <div className="flex-1 overflow-hidden">
         {selectedFile ? (
-          <DocumentPreview 
-            file={selectedFile} 
-            onClose={() => onFileSelect(null)} 
-          />
+          <>
+            <DocumentPreview 
+              file={selectedFile} 
+              onClose={() => onFileSelect(null)} 
+            />
+            <MobileCloseButton onClick={() => onFileSelect(null)} />
+          </>
         ) : (
           <DocumentUpload onFileSelect={onFileSelect} />
         )}

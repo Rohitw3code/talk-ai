@@ -4,7 +4,6 @@ import ChatHeader from '../components/chat/ChatHeader';
 import MessageList from '../components/chat/MessageList';
 import MessageInput from '../components/chat/MessageInput';
 import SaveChatDialog from '../components/chat/SaveChatDialog';
-import MobileControls from '../components/chat/MobileControls';
 import MobileOverlay from '../components/chat/MobileOverlay';
 import LeftPanel from '../components/chat/LeftPanel';
 import { useWindowSize } from '../hooks/useWindowSize';
@@ -71,11 +70,6 @@ export default function Chat() {
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      <MobileControls 
-        onToggleSidebar={toggleSidebar}
-        onToggleDocPanel={toggleDocPanel}
-      />
-
       <LeftPanel 
         showDocPanel={showDocPanel}
         showSidebar={showSidebar}
@@ -99,18 +93,23 @@ export default function Chat() {
         `}
         style={{ width: isMobile ? '100%' : `${100 - leftSectionWidth}%` }}
       >
-        <ChatHeader />
+        <ChatHeader 
+          onMenuClick={() => setShowSidebar(true)}
+          onDocClick={() => setShowDocPanel(true)}
+          onSave={() => setShowSaveDialog(true)}
+        />
         
+        {/* Mobile Save Button */}
         <button
           onClick={() => setShowSaveDialog(true)}
-          className="absolute right-4 top-4 z-40 p-2 rounded-lg bg-primary/10 hover:bg-primary/20 
-            text-primary transition-colors flex items-center gap-2"
+          className="fixed right-3 top-20 sm:hidden z-40 p-1.5 rounded-lg 
+            bg-primary/10 hover:bg-primary/20 text-primary transition-colors flex items-center gap-1.5"
         >
-          <Save className="w-5 h-5" />
-          <span className="hidden sm:inline">Save Chat</span>
+          <Save className="w-3.5 h-3.5" />
+          <span className="text-xs">Save</span>
         </button>
 
-        <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4">
+        <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-3 sm:px-4">
           <MessageList savedChats={savedChats} />
           <MessageInput />
         </div>
@@ -133,7 +132,6 @@ export default function Chat() {
 
       {isResizing && (
         <div className="fixed inset-0 z-50 cursor-col-resize" />
-      )}
-    </div>
+      )}    </div>
   );
 }
