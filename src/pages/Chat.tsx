@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import { Save } from 'lucide-react';
 import ChatHeader from '../components/chat/ChatHeader';
 import MessageList from '../components/chat/MessageList';
 import MessageInput from '../components/chat/MessageInput';
@@ -98,16 +97,6 @@ export default function Chat() {
           onDocClick={() => setShowDocPanel(true)}
           onSave={() => setShowSaveDialog(true)}
         />
-        
-        {/* Mobile Save Button */}
-        <button
-          onClick={() => setShowSaveDialog(true)}
-          className="fixed right-3 top-20 sm:hidden z-40 p-1.5 rounded-lg 
-            bg-primary/10 hover:bg-primary/20 text-primary transition-colors flex items-center gap-1.5"
-        >
-          <Save className="w-3.5 h-3.5" />
-          <span className="text-xs">Save</span>
-        </button>
 
         <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-3 sm:px-4">
           <MessageList savedChats={savedChats} />
@@ -132,6 +121,7 @@ export default function Chat() {
 
       {isResizing && (
         <div className="fixed inset-0 z-50 cursor-col-resize" />
-      )}    </div>
+      )}
+    </div>
   );
 }

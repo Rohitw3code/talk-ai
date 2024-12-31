@@ -35,7 +35,9 @@ export default function ChatHeader({ onMenuClick, onDocClick, onSave }: ChatHead
           <div className="hidden sm:block">
             <ModelSelector variant="compact" />
           </div>
+
           <ActionButtons onSave={onSave} />
+        
         </div>
       </div>
     </div>
