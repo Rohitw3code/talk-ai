@@ -1,7 +1,6 @@
 import React from 'react';
-import { File, FileText, Image as ImageIcon, X } from 'lucide-react';
-import ImagePreview from './preview/ImagePreview';
 import PDFPreview from './preview/PDFPreview';
+import ImagePreview from './preview/ImagePreview';
 import TextPreview from './preview/TextPreview';
 
 interface DocumentPreviewProps {
@@ -10,52 +9,33 @@ interface DocumentPreviewProps {
 }
 
 export default function DocumentPreview({ file, onClose }: DocumentPreviewProps) {
-  const getFileIcon = () => {
-    const type = file.type;
-    if (type.startsWith('image')) return ImageIcon;
-    if (type.includes('pdf')) return File;
-    return FileText;
-  };
-
-  const Icon = getFileIcon();
-
-  const renderPreview = () => {
-    if (file.type.startsWith('image')) {
-      return <ImagePreview file={file} />;
-    }
-    if (file.type === 'application/pdf') {
+  const getPreviewComponent = () => {
+    const fileType = file.type.toLowerCase();
+    
+    if (fileType.includes('pdf')) {
       return <PDFPreview file={file} />;
     }
-    if (file.type === 'text/plain') {
+    
+    if (fileType.includes('image')) {
+      return <ImagePreview file={file} />;
+    }
+    
+    if (fileType.includes('text') || fileType === '') {
       return <TextPreview file={file} />;
     }
+    
     return (
-      <div className="h-full flex items-center justify-center">
-        <div className="p-4 bg-card rounded-lg">
-          <p className="text-sm text-muted-foreground">
-            Preview not available for this file type
-          </p>
-        </div>
+      <div className="h-full flex items-center justify-center p-4">
+        <p className="text-muted-foreground">
+          Preview not available for this file type
+        </p>
       </div>
     );
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between p-4 border-b border-foreground/10">
-        <div className="flex items-center gap-2">
-          <Icon className="w-5 h-5 text-primary" />
-          <span className="font-medium truncate">{file.name}</span>
-        </div>
-        <button 
-          onClick={onClose}
-          className="p-2 hover:bg-foreground/5 rounded-lg transition-colors group md:block"
-          aria-label="Close preview"
-        >
-          <X className="w-5 h-5 text-muted-foreground group-hover:text-foreground" />
-        </button>
-      </div>
-      {renderPreview()}
+    <div className="h-full flex flex-col" onClick={(e) => e.stopPropagation()}>
+      {getPreviewComponent()}
     </div>
   );
 }

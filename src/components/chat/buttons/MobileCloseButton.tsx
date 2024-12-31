@@ -8,12 +8,15 @@ interface MobileCloseButtonProps {
 export default function MobileCloseButton({ onClick }: MobileCloseButtonProps) {
   return (
     <button
-      onClick={onClick}
-      className="md:hidden fixed top-20 right-3 z-50 p-2 rounded-lg bg-primary/10 
-        hover:bg-primary/20 text-primary transition-colors"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      className="md:hidden fixed top-4 right-4 z-50 p-2 rounded-lg 
+        bg-foreground/10 hover:bg-foreground/20 text-foreground transition-colors"
       aria-label="Close document preview"
     >
-      <X className="w-4 h-4" />
+      <X className="w-5 h-5" />
     </button>
   );
 }

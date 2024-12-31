@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2, Minimize2, StretchHorizontal } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, StretchHorizontal } from 'lucide-react';
 import { useWindowSize } from '../../../hooks/useWindowSize';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
+// Set up PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 interface PDFPreviewProps {
@@ -19,14 +20,6 @@ export default function PDFPreview({ file }: PDFPreviewProps) {
   const { width: windowWidth } = useWindowSize();
   const isMobile = windowWidth < 768;
   const containerRef = React.useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (containerRef.current && fitToWidth) {
-      const containerWidth = containerRef.current.clientWidth;
-      const targetWidth = containerWidth - (isMobile ? 16 : 32); // Account for padding
-      setScale(targetWidth / 595.276); // Standard PDF width
-    }
-  }, [windowWidth, fitToWidth, isMobile]);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);

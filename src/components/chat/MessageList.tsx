@@ -25,13 +25,6 @@ export default function MessageList({ savedChats }: MessageListProps) {
       {/* Saved Chats Section */}
       {savedChats.length > 0 && (
         <div className="border-t border-foreground/10 mt-6 pt-6">
-
-          {/* <h3 className="text-sm font-medium text-foreground/70 mb-3 flex items-center gap-2">
-            <Save className="w-4 h-4" />
-            Saved Chats
-          </h3>
- */}
-          
           <div className="space-y-2">
             {savedChats.map(chat => (
               <div

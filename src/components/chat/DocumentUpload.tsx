@@ -31,6 +31,7 @@ export default function DocumentUpload({ onFileSelect }: DocumentUploadProps) {
       className="h-full flex flex-col items-center justify-center p-4 md:p-8 border-2 border-dashed border-foreground/10 rounded-lg m-4"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
+      onClick={(e) => e.stopPropagation()}
     >
       <Upload className="w-8 h-8 md:w-12 md:h-12 text-primary mb-4" />
       <h3 className="text-base md:text-lg font-semibold mb-2">Upload your document</h3>
