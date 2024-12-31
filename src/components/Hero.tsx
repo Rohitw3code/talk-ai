@@ -9,6 +9,7 @@ import ModelSelector from './ui/ModelSelector';
 import TypewriterText from './ui/TypewriterText';
 import NeuralAnimation from './ui/NeuralAnimation';
 import CircuitPattern from './ui/CircuitPattern';
+import TwinklingStars from './ui/TwinklingStars';
 
 const features = [
   {
@@ -56,6 +57,7 @@ export default function Hero() {
       <AnimatedBackground />
       <NeuralAnimation />
       <CircuitPattern />
+      <TwinklingStars />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 text-center relative">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 
