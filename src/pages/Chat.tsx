@@ -1,18 +1,18 @@
 import React, { useState, useCallback } from 'react';
+import { Save } from 'lucide-react';
 import ChatHeader from '../components/chat/ChatHeader';
 import MessageList from '../components/chat/MessageList';
 import MessageInput from '../components/chat/MessageInput';
 import SaveChatDialog from '../components/chat/SaveChatDialog';
+import MobileControls from '../components/chat/MobileControls';
 import MobileOverlay from '../components/chat/MobileOverlay';
 import LeftPanel from '../components/chat/LeftPanel';
-import ChatSidebar from '../components/chat/ChatSidebar';
 import { useWindowSize } from '../hooks/useWindowSize';
-import { useResizePanel } from '../hooks/useResizePanel';
 
 export default function Chat() {
   const { width: windowWidth } = useWindowSize();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [showDocPanel, setShowDocPanel] = useState(true);
+  const [showDocPanel, setShowDocPanel] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [leftSectionWidth, setLeftSectionWidth] = useState(50);
@@ -71,6 +71,11 @@ export default function Chat() {
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
+      <MobileControls 
+        onToggleSidebar={toggleSidebar}
+        onToggleDocPanel={toggleDocPanel}
+      />
+
       <LeftPanel 
         showDocPanel={showDocPanel}
         showSidebar={showSidebar}
@@ -94,12 +99,8 @@ export default function Chat() {
         `}
         style={{ width: isMobile ? '100%' : `${100 - leftSectionWidth}%` }}
       >
-        <ChatHeader 
-          onMenuClick={() => setShowSidebar(true)}
-          onDocClick={() => setShowDocPanel(true)}
-          onSave={() => setShowSaveDialog(true)}
-        />
-
+        <ChatHeader />
+        
         <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-3 sm:px-4">
           <MessageList savedChats={savedChats} />
           <MessageInput />
@@ -107,7 +108,7 @@ export default function Chat() {
       </div>
 
       <MobileOverlay 
-        isVisible={isMobile && (showDocPanel || showSidebar)}
+        isVisible={isMobile && showSidebar}
         onClose={() => {
           setShowDocPanel(false);
           setShowSidebar(false);
