@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, StretchHorizontal } from 'lucide-react';
 import { useWindowSize } from '../../../hooks/useWindowSize';
+import { usePDFResize } from '../../../hooks/usePDFResize';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
@@ -13,13 +14,18 @@ interface PDFPreviewProps {
 }
 
 export default function PDFPreview({ file }: PDFPreviewProps) {
-  const [numPages, setNumPages] = useState<number>(0);
-  const [pageNumber, setPageNumber] = useState<number>(1);
-  const [scale, setScale] = useState<number>(1.0);
-  const [fitToWidth, setFitToWidth] = useState(true);
+  const [numPages, setNumPages] = React.useState<number>(0);
+  const [pageNumber, setPageNumber] = React.useState<number>(1);
+  const [scale, setScale] = React.useState<number>(1.0);
+  const [fitToWidth, setFitToWidth] = React.useState(true);
   const { width: windowWidth } = useWindowSize();
   const isMobile = windowWidth < 768;
   const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const { pdfWidth, isResizing, handleResizeStart } = usePDFResize({
+    minWidth: isMobile ? windowWidth - 32 : 300,
+    maxWidth: isMobile ? windowWidth - 32 : 1200
+  });
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -92,23 +98,38 @@ export default function PDFPreview({ file }: PDFPreviewProps) {
 
       <div 
         ref={containerRef}
-        className="flex-1 overflow-auto p-2 sm:p-4 w-full"
+        className="flex-1 overflow-auto p-2 sm:p-4 w-full relative"
       >
-        <div className={`flex justify-center ${fitToWidth ? 'w-full' : 'w-fit mx-auto'}`}>
+        <div 
+          className={`mx-auto ${fitToWidth ? 'w-full' : 'w-fit'}`}
+          style={{ width: fitToWidth ? '100%' : `${pdfWidth}px` }}
+        >
           <Document
             file={file}
             onLoadSuccess={onDocumentLoadSuccess}
             className="max-w-full"
           >
-            <Page
-              pageNumber={pageNumber}
-              scale={scale}
-              className="shadow-lg rounded-lg"
-              width={fitToWidth ? undefined : undefined}
-            />
+            <div className="relative">
+              <Page
+                pageNumber={pageNumber}
+                scale={scale}
+                className="shadow-lg rounded-lg"
+                width={fitToWidth ? undefined : pdfWidth}
+              />
+              {!fitToWidth && (
+                <div 
+                  className="absolute top-0 right-0 bottom-0 w-4 cursor-col-resize hover:bg-primary/10"
+                  onMouseDown={handleResizeStart}
+                />
+              )}
+            </div>
           </Document>
         </div>
       </div>
+
+      {isResizing && (
+        <div className="fixed inset-0 z-50 cursor-col-resize" />
+      )}
     </div>
   );
 }

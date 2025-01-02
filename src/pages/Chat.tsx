@@ -5,12 +5,14 @@ import MessageInput from '../components/chat/MessageInput';
 import SaveChatDialog from '../components/chat/SaveChatDialog';
 import MobileOverlay from '../components/chat/MobileOverlay';
 import LeftPanel from '../components/chat/LeftPanel';
+import ChatSidebar from '../components/chat/ChatSidebar';
 import { useWindowSize } from '../hooks/useWindowSize';
+import { useResizePanel } from '../hooks/useResizePanel';
 
 export default function Chat() {
   const { width: windowWidth } = useWindowSize();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [showDocPanel, setShowDocPanel] = useState(false);
+  const [showDocPanel, setShowDocPanel] = useState(true);
   const [showSidebar, setShowSidebar] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [leftSectionWidth, setLeftSectionWidth] = useState(50);

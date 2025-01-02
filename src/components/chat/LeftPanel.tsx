@@ -13,6 +13,7 @@ interface LeftPanelProps {
   onSidebarCollapse: () => void;
   onFileSelect: (file: File | null) => void;
   onResizeStart: (e: React.MouseEvent) => void;
+  onMinimizeDocPanel: () => void;
   isMobile: boolean;
 }
 
@@ -27,6 +28,7 @@ export default function LeftPanel({
   onSidebarCollapse,
   onFileSelect,
   onResizeStart,
+  onMinimizeDocPanel,
   isMobile
 }: LeftPanelProps) {
   return (
@@ -50,25 +52,27 @@ export default function LeftPanel({
       </div>
 
       {/* Document Panel */}
-      <div 
-        className={`
-          fixed md:relative inset-y-0 left-0 md:left-auto z-40
-          flex h-full transition-all duration-300 ease-in-out
-          ${showDocPanel ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
-          md:transform-none bg-background
-        `}
-        style={{ 
-          width: isMobile ? '100%' : `calc(${width} - ${isSidebarCollapsed ? '4rem' : '16rem'})`,
-          left: isMobile ? 0 : 'auto'
-        }}
-      >
-        <DocumentPanel 
-          selectedFile={selectedFile}
-          onFileSelect={onFileSelect}
-          onResizeStart={onResizeStart}
-          isResizing={isResizing}
-        />
-      </div>
+      {showDocPanel && (
+        <div 
+          className={`
+            fixed md:relative inset-y-0 right-0 md:right-auto z-40
+            flex h-full duration-300 ease-in-out
+            md:transform-none bg-background
+          `}
+          style={{ 
+            width: isMobile ? '100%' : `calc(${width} - ${isSidebarCollapsed ? '4rem' : '16rem'})`,
+            left: isMobile ? 0 : 'auto'
+          }}
+        >
+          <DocumentPanel 
+            selectedFile={selectedFile}
+            onFileSelect={onFileSelect}
+            onResizeStart={onResizeStart}
+            isResizing={isResizing}
+            onMinimize={onMinimizeDocPanel}
+          />
+        </div>
+      )}
     </>
   );
 }

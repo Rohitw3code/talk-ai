@@ -12,11 +12,12 @@ export default function CloseButton({ onClick }: CloseButtonProps) {
         e.stopPropagation();
         onClick();
       }}
-      className="absolute top-4 right-4 p-2 rounded-lg bg-foreground/5 
-        hover:bg-foreground/10 transition-colors"
+      className="absolute top-4 right-4 p-3 rounded-lg bg-foreground/5 
+        hover:bg-foreground/10 transition-colors min-w-[44px] min-h-[44px]
+        flex items-center justify-center"
       aria-label="Close document panel"
     >
-      <X className="w-5 h-5" />
+      <X className="w-6 h-6" />
     </button>
   );
 }

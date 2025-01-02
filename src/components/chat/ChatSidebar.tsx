@@ -3,19 +3,24 @@ import { MessageSquare, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import RecentChats from './RecentChats';
 import SidebarSettings from './SidebarSettings';
 import ModelSelector from './ModelSelector';
+import DocPanelToggle from './buttons/DocPanelToggle';
 
 interface ChatSidebarProps {
   isOpen: boolean;
   isCollapsed: boolean;
+  showDocPanel: boolean;
   onClose: () => void;
   onToggleCollapse: () => void;
+  onToggleDocPanel: () => void;
 }
 
 export default function ChatSidebar({ 
   isOpen, 
   isCollapsed, 
+  showDocPanel,
   onClose, 
-  onToggleCollapse 
+  onToggleCollapse,
+  onToggleDocPanel
 }: ChatSidebarProps) {
   return (
     <>
@@ -70,6 +75,14 @@ export default function ChatSidebar({
           </div>
           
           {!isCollapsed && <SidebarSettings />}
+        </div>
+
+        {/* Document Panel Toggle */}
+        <div className="relative">
+          <DocPanelToggle 
+            isExpanded={showDocPanel} 
+            onClick={onToggleDocPanel}
+          />
         </div>
       </div>
 
