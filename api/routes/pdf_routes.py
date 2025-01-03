@@ -23,7 +23,7 @@ def upload_pdf():
         if not allowed_file(file.filename):
             return jsonify({'error': 'Invalid file format. Only PDF files are allowed'}), 400
             
-        # Process the PDF
+        # Process and store the PDF
         result = pdf_service.process_pdf(file)
         
         return jsonify(result), 200

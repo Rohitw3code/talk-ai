@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Save } from 'lucide-react';
 import ChatHeader from '../components/chat/ChatHeader';
 import MessageList from '../components/chat/MessageList';
@@ -9,89 +9,78 @@ import MobileOverlay from '../components/chat/MobileOverlay';
 import LeftPanel from '../components/chat/LeftPanel';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { Message } from '../types/chat';
+import { sendMessage, getChatHistory } from '../services/chat/chatService';
+import { useChatState } from '../hooks/useChatState';
+import { useFileHandling } from '../hooks/useFileHandling';
+import { useLayoutState } from '../hooks/useLayoutState';
 
 export default function Chat() {
   const { width: windowWidth } = useWindowSize();
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [showDocPanel, setShowDocPanel] = useState(false);
-  const [showSidebar, setShowSidebar] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [leftSectionWidth, setLeftSectionWidth] = useState(50);
-  const [isResizing, setIsResizing] = useState(false);
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [savedChats, setSavedChats] = useState<{ id: string; name: string }[]>([]);
-
   const isMobile = windowWidth < 768;
 
-  const handleSendMessage = useCallback((content: string) => {
-    const newMessage: Message = {
-      id: crypto.randomUUID(),
-      content,
-      sender: 'user',
-      timestamp: new Date()
-    };
-    
-    setMessages(prev => [...prev, newMessage]);
+  // Chat state management
+  const { 
+    messages, 
+    setMessages,
+    handleSendMessage 
+  } = useChatState();
 
-    // Simulate AI response after a short delay
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: crypto.randomUUID(),
-        content: 'This is a simulated AI response. The actual AI integration will be implemented later.',
-        sender: 'ai',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, aiResponse]);
-    }, 1000);
-  }, []);
+  // File handling
+  const {
+    selectedFile,
+    setSelectedFile
+  } = useFileHandling();
 
-  const handleSaveChat = useCallback((name: string) => {
-    const newChat = {
-      id: crypto.randomUUID(),
-      name
-    };
-    setSavedChats(prev => [...prev, newChat]);
-  }, []);
+  // Layout state management
+  const {
+    showDocPanel,
+    showSidebar,
+    isSidebarCollapsed,
+    leftSectionWidth,
+    isResizing,
+    showSaveDialog,
+    setShowDocPanel,
+    setShowSidebar,
+    setIsSidebarCollapsed,
+    handleResizeStart,
+    setShowSaveDialog
+  } = useLayoutState({ isMobile, windowWidth });
 
-  const handleResizeStart = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    if (isMobile) return;
-    
-    setIsResizing(true);
+  // Load chat history
+  useEffect(() => {
+    async function loadChatHistory() {
+      try {
+        const history = await getChatHistory();
+        if (history.length > 0) {
+          const formattedMessages = history.map(chat => ({
+            id: crypto.randomUUID(),
+            content: chat.message,
+            sender: 'user',
+            timestamp: new Date(chat.timestamp)
+          }));
+          setMessages(formattedMessages);
+        }
+      } catch (error) {
+        console.error('Failed to load chat history:', error);
+      }
+    }
 
-    const handleResize = (e: MouseEvent) => {
-      const containerWidth = windowWidth;
-      const minWidth = isSidebarCollapsed ? 300 : 400;
-      const maxWidth = containerWidth - 400;
-      const newWidth = Math.min(Math.max(e.clientX, minWidth), maxWidth);
-      const widthPercentage = (newWidth / containerWidth) * 100;
-      setLeftSectionWidth(widthPercentage);
-    };
-
-    const handleResizeEnd = () => {
-      setIsResizing(false);
-      document.removeEventListener('mousemove', handleResize);
-      document.removeEventListener('mouseup', handleResizeEnd);
-    };
-
-    document.addEventListener('mousemove', handleResize);
-    document.addEventListener('mouseup', handleResizeEnd);
-  }, [isMobile, isSidebarCollapsed, windowWidth]);
+    loadChatHistory();
+  }, [setMessages]);
 
   const toggleDocPanel = useCallback(() => {
     setShowDocPanel(prev => !prev);
     if (isMobile) {
       setShowSidebar(false);
     }
-  }, [isMobile]);
+  }, [isMobile, setShowDocPanel, setShowSidebar]);
 
   const toggleSidebar = useCallback(() => {
     setShowSidebar(prev => !prev);
     if (isMobile) {
       setShowDocPanel(false);
     }
-  }, [isMobile]);
+  }, [isMobile, setShowDocPanel, setShowSidebar]);
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -128,7 +117,7 @@ export default function Chat() {
         
         <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-3 sm:px-4 relative">
           <div className="absolute inset-0 flex flex-col">
-            <MessageList messages={messages} savedChats={savedChats} />
+            <MessageList messages={messages} />
             <MessageInput onSendMessage={handleSendMessage} />
           </div>
         </div>
@@ -144,7 +133,10 @@ export default function Chat() {
 
       {showSaveDialog && (
         <SaveChatDialog
-          onSave={handleSaveChat}
+          onSave={(name) => {
+            // Handle save chat
+            setShowSaveDialog(false);
+          }}
           onClose={() => setShowSaveDialog(false)}
         />
       )}
