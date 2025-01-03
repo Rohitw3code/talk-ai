@@ -1,5 +1,4 @@
-from pathlib import Path
-from config import Config
+from config.config import Config
 
 def allowed_file(filename: str) -> bool:
     """Check if file extension is allowed"""
