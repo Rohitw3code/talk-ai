@@ -23,13 +23,18 @@ export default function PDFPreview({ file }: PDFPreviewProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   const { pdfWidth, isResizing, handleResizeStart } = usePDFResize({
-    minWidth: isMobile ? windowWidth - 32 : 300,
-    maxWidth: isMobile ? windowWidth - 32 : 1200
+    minWidth: isMobile ? windowWidth - 16 : 300,
+    maxWidth: isMobile ? windowWidth - 16 : 1200
   });
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
     setIsLoading(false);
+    if (fitToWidth && containerRef.current) {
+      const containerWidth = containerRef.current.clientWidth;
+      const adjustedWidth = containerWidth - (isMobile ? 8 : 16);
+      setScale(adjustedWidth / 595.276);
+    }
   };
 
   const adjustScale = (delta: number) => {
@@ -41,8 +46,8 @@ export default function PDFPreview({ file }: PDFPreviewProps) {
     setFitToWidth(!fitToWidth);
     if (!fitToWidth && containerRef.current) {
       const containerWidth = containerRef.current.clientWidth;
-      const targetWidth = containerWidth - (isMobile ? 16 : 32);
-      setScale(targetWidth / 595.276);
+      const adjustedWidth = containerWidth - (isMobile ? 8 : 16);
+      setScale(adjustedWidth / 595.276);
     }
   };
 
@@ -99,7 +104,7 @@ export default function PDFPreview({ file }: PDFPreviewProps) {
       </div>
 
       {/* PDF Content */}
-      <div 
+      <div
         ref={containerRef}
         className="flex-1 overflow-auto p-2 sm:p-4 w-full relative"
       >
@@ -111,8 +116,8 @@ export default function PDFPreview({ file }: PDFPreviewProps) {
             </div>
           </div>
         )}
-        
-        <div 
+
+        <div
           className={`mx-auto ${fitToWidth ? 'w-full' : 'w-fit'}`}
           style={{ width: fitToWidth ? '100%' : `${pdfWidth}px` }}
         >
@@ -131,7 +136,7 @@ export default function PDFPreview({ file }: PDFPreviewProps) {
                 loading={null}
               />
               {!fitToWidth && !isMobile && (
-                <div 
+                <div
                   className="absolute top-0 right-0 bottom-0 w-4 cursor-col-resize hover:bg-primary/10"
                   onMouseDown={handleResizeStart}
                 />

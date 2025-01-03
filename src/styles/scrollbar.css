@@ -1,0 +1,34 @@
+/* Custom scrollbar styles */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thumb-foreground\/10 {
+  scrollbar-color: rgba(var(--foreground), 0.1) transparent;
+}
+
+.scrollbar-thumb-foreground\/20 {
+  scrollbar-color: rgba(var(--foreground), 0.2) transparent;
+}
+
+.scrollbar-track-transparent {
+  scrollbar-track-color: transparent;
+}
+
+/* Webkit scrollbar styles */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--foreground), 0.1);
+  border-radius: 3px;
+}
+
+.scrollbar-thin:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--foreground), 0.2);
+}

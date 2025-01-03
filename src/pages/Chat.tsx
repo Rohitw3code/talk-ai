@@ -8,9 +8,11 @@ import MobileControls from '../components/chat/MobileControls';
 import MobileOverlay from '../components/chat/MobileOverlay';
 import LeftPanel from '../components/chat/LeftPanel';
 import { useWindowSize } from '../hooks/useWindowSize';
+import { Message } from '../types/chat';
 
 export default function Chat() {
   const { width: windowWidth } = useWindowSize();
+  const [messages, setMessages] = useState<Message[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showDocPanel, setShowDocPanel] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
@@ -21,6 +23,28 @@ export default function Chat() {
   const [savedChats, setSavedChats] = useState<{ id: string; name: string }[]>([]);
 
   const isMobile = windowWidth < 768;
+
+  const handleSendMessage = useCallback((content: string) => {
+    const newMessage: Message = {
+      id: crypto.randomUUID(),
+      content,
+      sender: 'user',
+      timestamp: new Date()
+    };
+    
+    setMessages(prev => [...prev, newMessage]);
+
+    // Simulate AI response after a short delay
+    setTimeout(() => {
+      const aiResponse: Message = {
+        id: crypto.randomUUID(),
+        content: 'This is a simulated AI response. The actual AI integration will be implemented later.',
+        sender: 'ai',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, aiResponse]);
+    }, 1000);
+  }, []);
 
   const handleSaveChat = useCallback((name: string) => {
     const newChat = {
@@ -87,6 +111,7 @@ export default function Chat() {
         onSidebarCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         onFileSelect={setSelectedFile}
         onResizeStart={handleResizeStart}
+        onMinimizeDocPanel={() => setShowDocPanel(false)}
         isMobile={isMobile}
       />
 
@@ -99,11 +124,13 @@ export default function Chat() {
         `}
         style={{ width: isMobile ? '100%' : `${100 - leftSectionWidth}%` }}
       >
-        <ChatHeader />
+        <ChatHeader onSave={() => setShowSaveDialog(true)} />
         
-        <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-3 sm:px-4">
-          <MessageList savedChats={savedChats} />
-          <MessageInput />
+        <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-3 sm:px-4 relative">
+          <div className="absolute inset-0 flex flex-col">
+            <MessageList messages={messages} savedChats={savedChats} />
+            <MessageInput onSendMessage={handleSendMessage} />
+          </div>
         </div>
       </div>
 
