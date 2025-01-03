@@ -6,6 +6,7 @@ import ResizeHandle from './ResizeHandle';
 import MobileCloseButton from './buttons/MobileCloseButton';
 import CloseButton from './buttons/CloseButton';
 import { useWindowSize } from '../../hooks/useWindowSize';
+import type { UploadResponse } from '../../services/pdf/types';
 
 interface DocumentPanelProps {
   selectedFile: File | null;
@@ -26,18 +27,17 @@ export default function DocumentPanel({
   const isMobile = width < 768;
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadResponse, setUploadResponse] = useState<UploadResponse | null>(null);
 
-  const handleFileSelect = async (file: File) => {
+  const handleFileSelect = async (file: File, response: UploadResponse) => {
     try {
       setIsLoading(true);
       setError(null);
-      
-      // Simulate file processing delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      setUploadResponse(response);
       onFileSelect(file);
     } catch (err) {
       setError('Failed to load document. Please try again.');
+      onFileSelect(null);
     } finally {
       setIsLoading(false);
     }
@@ -71,19 +71,39 @@ export default function DocumentPanel({
               </button>
             </div>
           </div>
-        ) : selectedFile ? (
+        ) : selectedFile && uploadResponse ? (
           <div className="relative h-full">
-            <DocumentPreview file={selectedFile} onClose={() => onFileSelect(null)} />
-            {isMobile && <MobileCloseButton onClick={() => onFileSelect(null)} />}
+            <DocumentPreview 
+              file={selectedFile} 
+              uploadResponse={uploadResponse}
+              onClose={() => {
+                onFileSelect(null);
+                setUploadResponse(null);
+              }} 
+            />
+            {isMobile && (
+              <MobileCloseButton 
+                onClick={() => {
+                  onFileSelect(null);
+                  setUploadResponse(null);
+                }} 
+              />
+            )}
           </div>
         ) : (
           <>
             <DocumentUpload onFileSelect={handleFileSelect} />
-            {!isMobile && <CloseButton onClick={() => onFileSelect(null)} />}
+            {!isMobile && (
+              <CloseButton 
+                onClick={() => {
+                  onFileSelect(null);
+                  setUploadResponse(null);
+                }} 
+              />
+            )}
           </>
         )}
         
-        {/* Minimize Button - Desktop Only */}
         {!isMobile && (
           <button
             onClick={onMinimize}
@@ -97,7 +117,6 @@ export default function DocumentPanel({
         )}
       </div>
       
-      {/* Resize Handle - Desktop Only */}
       {!isMobile && (
         <div
           onMouseDown={onResizeStart}
@@ -110,7 +129,6 @@ export default function DocumentPanel({
         </div>
       )}
 
-      {/* Mobile Overlay */}
       {isMobile && isResizing && (
         <div 
           className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50"

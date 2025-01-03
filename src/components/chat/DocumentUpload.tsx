@@ -1,35 +1,37 @@
 import React, { useCallback, useState } from 'react';
-import { Upload, AlertCircle } from 'lucide-react';
-
-const ACCEPTED_FILE_TYPES = '.png,.jpg,.jpeg,.pdf,.doc,.docx,.txt';
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+import { Upload, AlertCircle, Loader2 } from 'lucide-react';
+import { uploadPDF } from '../../services/pdf/uploadService';
+import type { UploadProgress, UploadResponse } from '../../services/pdf/types';
 
 interface DocumentUploadProps {
-  onFileSelect: (file: File) => void;
+  onFileSelect: (file: File, uploadResponse: UploadResponse) => void;
 }
 
 export default function DocumentUpload({ onFileSelect }: DocumentUploadProps) {
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
-  const validateFile = (file: File): string | null => {
-    if (!file.type.match(/(image\/.*|application\/pdf|application\/msword|text\/.*)/)) {
-      return 'Unsupported file type. Please upload an image, PDF, DOC, or TXT file.';
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      return 'File size exceeds 10MB limit.';
-    }
-    return null;
-  };
+  const handleUpload = async (file: File) => {
+    try {
+      setIsUploading(true);
+      setError(null);
 
-  const handleFile = (file: File) => {
-    const validationError = validateFile(file);
-    if (validationError) {
-      setError(validationError);
-      return;
+      const response = await uploadPDF(file, {
+        onProgress: (progress: UploadProgress) => {
+          const percentage = (progress.loaded / progress.total) * 100;
+          setUploadProgress(Math.round(percentage));
+        }
+      });
+
+      onFileSelect(file, response);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Upload failed');
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
     }
-    setError(null);
-    onFileSelect(file);
   };
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -50,12 +52,12 @@ export default function DocumentUpload({ onFileSelect }: DocumentUploadProps) {
     setDragActive(false);
     
     const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
+    if (file) handleUpload(file);
   }, []);
 
   const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) handleFile(file);
+    if (file) handleUpload(file);
   }, []);
 
   return (
@@ -73,41 +75,59 @@ export default function DocumentUpload({ onFileSelect }: DocumentUploadProps) {
       tabIndex={0}
       aria-label="Upload document area"
     >
-      <Upload className={`w-8 h-8 md:w-12 md:h-12 mb-4 transition-colors duration-200
-        ${dragActive ? 'text-primary' : 'text-primary/80'}`} />
-      
-      <h3 className="text-base md:text-lg font-semibold mb-2">Upload your document</h3>
-      
-      <p className="text-xs md:text-sm text-muted-foreground mb-4 text-center">
-        Drag and drop or click to upload<br />
-        Supported formats: PNG, JPG, PDF, DOC, TXT
-      </p>
-
-      {error && (
-        <div className="flex items-center gap-2 text-red-500 text-sm mb-4">
-          <AlertCircle className="w-4 h-4" />
-          <p>{error}</p>
+      {isUploading ? (
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <div className="flex flex-col items-center">
+            <p className="text-sm text-muted-foreground mb-2">Uploading PDF...</p>
+            <div className="w-48 h-2 bg-foreground/10 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-primary transition-all duration-300"
+                style={{ width: `${uploadProgress}%` }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">{uploadProgress}%</p>
+          </div>
         </div>
+      ) : (
+        <>
+          <Upload className={`w-8 h-8 md:w-12 md:h-12 mb-4 transition-colors duration-200
+            ${dragActive ? 'text-primary' : 'text-primary/80'}`} />
+          
+          <h3 className="text-base md:text-lg font-semibold mb-2">Upload your document</h3>
+          
+          <p className="text-xs md:text-sm text-muted-foreground mb-4 text-center">
+            Drag and drop or click to upload<br />
+            PDF files only
+          </p>
+
+          {error && (
+            <div className="flex items-center gap-2 text-red-500 text-sm mb-4">
+              <AlertCircle className="w-4 h-4" />
+              <p>{error}</p>
+            </div>
+          )}
+
+          <label className="relative">
+            <input
+              type="file"
+              className="hidden"
+              accept="application/pdf"
+              onChange={handleFileInput}
+              aria-label="Choose file"
+            />
+            <span className="inline-flex items-center justify-center min-w-[120px] min-h-[44px] px-6 py-2 
+              rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 
+              cursor-pointer text-sm md:text-base font-medium transition-colors">
+              Choose File
+            </span>
+          </label>
+
+          <p className="mt-4 text-xs text-muted-foreground">
+            Maximum file size: 10MB
+          </p>
+        </>
       )}
-
-      <label className="relative">
-        <input
-          type="file"
-          className="hidden"
-          accept={ACCEPTED_FILE_TYPES}
-          onChange={handleFileInput}
-          aria-label="Choose file"
-        />
-        <span className="inline-flex items-center justify-center min-w-[120px] min-h-[44px] px-6 py-2 
-          rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 
-          cursor-pointer text-sm md:text-base font-medium transition-colors">
-          Choose File
-        </span>
-      </label>
-
-      <p className="mt-4 text-xs text-muted-foreground">
-        Maximum file size: 10MB
-      </p>
     </div>
   );
 }
