@@ -1,4 +1,4 @@
-import { PDF_ENDPOINTS } from '../../config/api.config';
+import { FILE_ENDPOINTS } from '../../config/api.config';
 import { validatePDFFile } from './validators';
 import type { UploadResponse, UploadError, UploadProgress } from './types';
 
@@ -36,11 +36,7 @@ export async function uploadPDF(file: File, options?: UploadOptions): Promise<Up
         if (xhr.status === 200) {
           try {
             const response = JSON.parse(xhr.responseText);
-            resolve({
-              url: response.url,
-              filename: response.filename,
-              size: response.size
-            });
+            resolve(response);
           } catch (error) {
             reject(new Error('Invalid response format'));
           }
@@ -58,7 +54,7 @@ export async function uploadPDF(file: File, options?: UploadOptions): Promise<Up
         reject(new Error('Network error occurred. Please check if the server is running.'));
       };
 
-      xhr.open('POST', PDF_ENDPOINTS.UPLOAD);
+      xhr.open('POST', FILE_ENDPOINTS.UPLOAD);
       xhr.send(formData);
     });
   } catch (error) {

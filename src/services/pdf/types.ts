@@ -2,6 +2,7 @@ export interface UploadResponse {
   url: string;
   filename: string;
   size: number;
+  type: string;
 }
 
 export interface UploadError {

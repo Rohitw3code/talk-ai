@@ -15,7 +15,7 @@ export default function Chat() {
   const { width: windowWidth } = useWindowSize();
   const [messages, setMessages] = useState<Message[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [showDocPanel, setShowDocPanel] = useState(false);
+  const [showDocPanel, setShowDocPanel] = useState(true);
   const [showSidebar, setShowSidebar] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [leftSectionWidth, setLeftSectionWidth] = useState(50);
@@ -156,7 +156,10 @@ export default function Chat() {
         <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-3 sm:px-4 relative">
           <div className="absolute inset-0 flex flex-col">
             <MessageList messages={messages} savedChats={savedChats} />
-            <MessageInput onSendMessage={handleSendMessage} />
+            <MessageInput 
+              onSendMessage={handleSendMessage} 
+              onFileSelect={toggleDocPanel}
+            />
           </div>
         </div>
       </div>
@@ -171,7 +174,10 @@ export default function Chat() {
 
       {showSaveDialog && (
         <SaveChatDialog
-          onSave={handleSaveChat}
+          onSave={(name) => {
+            setSavedChats(prev => [...prev, { id: crypto.randomUUID(), name }]);
+            setShowSaveDialog(false);
+          }}
           onClose={() => setShowSaveDialog(false)}
         />
       )}

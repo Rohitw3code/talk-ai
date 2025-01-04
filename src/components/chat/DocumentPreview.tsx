@@ -2,25 +2,27 @@ import React from 'react';
 import PDFPreview from './preview/PDFPreview';
 import ImagePreview from './preview/ImagePreview';
 import TextPreview from './preview/TextPreview';
+import { UploadResponse } from '../../services/pdf/types';
 
 interface DocumentPreviewProps {
   file: File;
+  uploadResponse: UploadResponse;
   onClose: () => void;
 }
 
-export default function DocumentPreview({ file, onClose }: DocumentPreviewProps) {
+export default function DocumentPreview({ file, uploadResponse, onClose }: DocumentPreviewProps) {
   const getPreviewComponent = () => {
     const fileType = file.type.toLowerCase();
     
-    if (fileType.includes('pdf')) {
+    if (fileType === 'application/pdf') {
       return <PDFPreview file={file} />;
     }
     
-    if (fileType.includes('image')) {
-      return <ImagePreview file={file} />;
+    if (fileType === 'image/png') {
+      return <ImagePreview file={file} uploadResponse={uploadResponse} />;
     }
     
-    if (fileType.includes('text') || fileType === '') {
+    if (fileType === 'text/plain') {
       return <TextPreview file={file} />;
     }
     

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Upload, AlertCircle, Loader2 } from 'lucide-react';
 import { uploadPDF } from '../../services/pdf/uploadService';
+import { UPLOAD_CONSTRAINTS } from '../../config/api.config';
 import type { UploadProgress, UploadResponse } from '../../services/pdf/types';
 
 interface DocumentUploadProps {
@@ -60,6 +61,10 @@ export default function DocumentUpload({ onFileSelect }: DocumentUploadProps) {
     if (file) handleUpload(file);
   }, []);
 
+  const allowedTypesText = UPLOAD_CONSTRAINTS.ALLOWED_EXTENSIONS
+    .map(ext => ext.toUpperCase())
+    .join(', ');
+
   return (
     <div 
       className={`h-full flex flex-col items-center justify-center p-4 md:p-8 
@@ -79,7 +84,7 @@ export default function DocumentUpload({ onFileSelect }: DocumentUploadProps) {
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
           <div className="flex flex-col items-center">
-            <p className="text-sm text-muted-foreground mb-2">Uploading PDF...</p>
+            <p className="text-sm text-muted-foreground mb-2">Uploading file...</p>
             <div className="w-48 h-2 bg-foreground/10 rounded-full overflow-hidden">
               <div 
                 className="h-full bg-primary transition-all duration-300"
@@ -98,7 +103,7 @@ export default function DocumentUpload({ onFileSelect }: DocumentUploadProps) {
           
           <p className="text-xs md:text-sm text-muted-foreground mb-4 text-center">
             Drag and drop or click to upload<br />
-            PDF files only
+            {allowedTypesText} files
           </p>
 
           {error && (
@@ -112,7 +117,7 @@ export default function DocumentUpload({ onFileSelect }: DocumentUploadProps) {
             <input
               type="file"
               className="hidden"
-              accept="application/pdf"
+              accept={UPLOAD_CONSTRAINTS.ALLOWED_EXTENSIONS.join(',')}
               onChange={handleFileInput}
               aria-label="Choose file"
             />

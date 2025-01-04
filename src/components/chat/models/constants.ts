@@ -16,6 +16,13 @@ export const MODELS: Model[] = [
     contextLength: 8192
   },
   {
+    id: 'llama-3.3-70b-versatile',
+    name: 'llama-3.3-70b-versatile',
+    shortName: 'LLaMA Tool',
+    type: 'groq',
+    contextLength: 8192
+  },
+  {
     id: 'llama-3.2-90b-vision-preview',
     name: 'LLaMA 3.2 90B Vision',
     shortName: 'LLaMA Vision',
