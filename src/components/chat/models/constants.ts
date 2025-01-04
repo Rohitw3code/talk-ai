@@ -1,6 +1,23 @@
 import { Model } from './types';
 
-export const MODELS: Model[] = [
+export const VISION_MODELS: Model[] = [
+  {
+    id: 'llama-3.2-90b-vision-preview',
+    name: 'LLaMA 3.2 90B Vision',
+    shortName: 'LLaMA Vision 90B',
+    type: 'groq',
+    contextLength: 8192
+  },
+  {
+    id: 'llama-3.2-11b-vision-preview',
+    name: 'LLaMA 3.2 11B Vision',
+    shortName: 'LLaMA Vision 11B',
+    type: 'groq',
+    contextLength: 8192
+  }
+];
+
+export const DEFAULT_MODELS: Model[] = [
   {
     id: 'gemma2-9b-it',
     name: 'Gemma 2 9B',
@@ -14,21 +31,7 @@ export const MODELS: Model[] = [
     shortName: 'LLaMA Tool',
     type: 'groq',
     contextLength: 8192
-  },
-  {
-    id: 'llama-3.3-70b-versatile',
-    name: 'llama-3.3-70b-versatile',
-    shortName: 'LLaMA Tool',
-    type: 'groq',
-    contextLength: 8192
-  },
-  {
-    id: 'llama-3.2-90b-vision-preview',
-    name: 'LLaMA 3.2 90B Vision',
-    shortName: 'LLaMA Vision',
-    type: 'groq',
-    contextLength: 8192
   }
 ];
 
-export const DEFAULT_MODEL = MODELS[0].id;
+export const DEFAULT_MODEL = DEFAULT_MODELS[0].id;

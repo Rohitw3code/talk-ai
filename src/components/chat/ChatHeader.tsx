@@ -8,9 +8,15 @@ interface ChatHeaderProps {
   onSave: () => void;
   onMenuClick?: () => void;
   onDocClick?: () => void;
+  selectedFile: File | null;
 }
 
-export default function ChatHeader({ onSave, onMenuClick, onDocClick }: ChatHeaderProps) {
+export default function ChatHeader({ 
+  onSave, 
+  onMenuClick, 
+  onDocClick, 
+  selectedFile 
+}: ChatHeaderProps) {
   const navigate = useNavigate();
 
   return (
@@ -31,7 +37,10 @@ export default function ChatHeader({ onSave, onMenuClick, onDocClick }: ChatHead
           </div>
 
           <div className="flex items-center gap-2">
-            <ModelSelector variant="compact" />
+            <ModelSelector 
+              variant="compact" 
+              selectedFile={selectedFile}
+            />
             <button
               onClick={onSave}
               className="p-1.5 sm:p-2 rounded-lg bg-primary/10 hover:bg-primary/20 

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Save } from 'lucide-react';
 import ChatHeader from '../components/chat/ChatHeader';
 import MessageList from '../components/chat/MessageList';
@@ -56,7 +56,6 @@ export default function Chat() {
           
           if (done) break;
           
-          // Convert the Uint8Array to string
           const chunk = new TextDecoder().decode(value);
           const lines = chunk.split('\n');
           
@@ -65,7 +64,6 @@ export default function Chat() {
               const content = line.slice(6);
               aiResponse += content;
               
-              // Update the AI message with accumulated response
               setMessages(prev => prev.map(msg => 
                 msg.id === aiMessage.id 
                   ? { ...msg, content: aiResponse }
@@ -77,7 +75,6 @@ export default function Chat() {
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      // Handle error appropriately
     }
   }, [selectedFile]);
 
@@ -151,7 +148,10 @@ export default function Chat() {
         `}
         style={{ width: isMobile ? '100%' : `${100 - leftSectionWidth}%` }}
       >
-        <ChatHeader onSave={() => setShowSaveDialog(true)} />
+        <ChatHeader 
+          onSave={() => setShowSaveDialog(true)} 
+          selectedFile={selectedFile}
+        />
         
         <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-3 sm:px-4 relative">
           <div className="absolute inset-0 flex flex-col">
