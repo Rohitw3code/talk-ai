@@ -10,6 +10,9 @@ export async function sendMessage(message: string, pdfPath?: string): Promise<Re
       body: JSON.stringify({ message, pdfPath }),
     });
 
+    console.log("resp : "+response);
+    console.log("resptext : "+JSON.stringify(response));
+
     if (!response.ok) {
       throw new Error('Failed to send message');
     }
