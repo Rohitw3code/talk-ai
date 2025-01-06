@@ -6,6 +6,7 @@ export function getImageUrl(filename: string): string {
 }
 
 export function preloadImage(url: string): Promise<void> {
+  console.log("image servic (url) : "+url);
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve();

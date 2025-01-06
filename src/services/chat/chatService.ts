@@ -1,17 +1,14 @@
 import { API_BASE_URL } from '../../config/api.config';
 
-export async function sendMessage(message: string, pdfPath?: string): Promise<ReadableStream<Uint8Array> | null> {
+export async function sendMessage(message: string, path?: string): Promise<ReadableStream<Uint8Array> | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/chat/send`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message, pdfPath }),
+      body: JSON.stringify({ message, path }),
     });
-
-    console.log("resp : "+response);
-    console.log("resptext : "+JSON.stringify(response));
 
     if (!response.ok) {
       throw new Error('Failed to send message');

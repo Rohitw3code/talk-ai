@@ -8,6 +8,7 @@ export default {
         blob: "blob 7s infinite",
         float: "float 3s ease-in-out infinite",
         'pulse-ring': "pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        bounce: "bounce 1s infinite",
       },
       keyframes: {
         blob: {
@@ -22,6 +23,14 @@ export default {
           },
           "100%": {
             transform: "translate(0px, 0px) scale(1)",
+          },
+        },
+        bounce: {
+          "0%, 100%": {
+            transform: "translateY(0)",
+          },
+          "50%": {
+            transform: "translateY(-4px)",
           },
         },
       },

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bot, User, Copy, Check } from 'lucide-react';
 import { Message } from '../../../types/chat';
 import MarkdownRenderer from './MarkdownRenderer';
-import { useState } from 'react';
+import ResponseAnimation from './animations/ResponseAnimation';
 
 interface MessageItemProps {
   message: Message;
@@ -10,6 +10,19 @@ interface MessageItemProps {
 
 export default function MessageItem({ message }: MessageItemProps) {
   const [copied, setCopied] = useState(false);
+  const [animationStage, setAnimationStage] = useState<'thinking' | 'typing' | null>(null);
+
+  useEffect(() => {
+    if (message.sender === 'ai' && message.content === '') {
+      setAnimationStage('thinking');
+      const thinkingTimer = setTimeout(() => {
+        setAnimationStage('typing');
+      }, 2000);
+      return () => clearTimeout(thinkingTimer);
+    } else {
+      setAnimationStage(null);
+    }
+  }, [message.content]);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(message.content);
@@ -36,7 +49,7 @@ export default function MessageItem({ message }: MessageItemProps) {
             ? 'bg-primary/10 text-foreground/90 px-4 py-3' 
             : 'bg-card/50 backdrop-blur-sm text-foreground/90 p-4 shadow-sm'
         }`}>
-          {message.sender === 'ai' && (
+          {message.sender === 'ai' && !animationStage && (
             <button
               onClick={handleCopy}
               className="absolute top-2 right-2 p-1.5 rounded-md opacity-0 group-hover:opacity-100 
@@ -53,7 +66,9 @@ export default function MessageItem({ message }: MessageItemProps) {
           <div className={`prose prose-sm max-w-none ${
             message.sender === 'user' ? 'text-right' : ''
           }`}>
-            {message.sender === 'ai' ? (
+            {animationStage ? (
+              <ResponseAnimation stage={animationStage} />
+            ) : message.sender === 'ai' ? (
               <MarkdownRenderer content={message.content} />
             ) : (
               <p className="text-sm sm:text-base whitespace-pre-wrap leading-relaxed">
