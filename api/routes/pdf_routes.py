@@ -8,10 +8,12 @@ pdf_bp = Blueprint('pdf', __name__)
 pdf_service = PDFService()
 
 # Firebase Realtime Database URL
-FIREBASE_URL = "https://railseat-default-rtdb.asia-southeast1.firebasedatabase.app/talktoai/pdf-data"
+FIREBASE_URL = "https://railseat-default-rtdb.asia-southeast1.firebasedatabase.app/talktoai/pdf-data1"
+session_id = 'test_id'
 
 @pdf_bp.route('/upload', methods=['POST'])
 def upload_pdf():
+    print("hello upload")
     try:
         # Check if file is present in request
         if 'file' not in request.files:
@@ -29,12 +31,15 @@ def upload_pdf():
             
         # Process the PDF and extract text
         result = pdf_service.process_pdf(file)
+
         
         # Save extracted text to Firebase
         try:
-            response = requests.put(f"{FIREBASE_URL}.json", json={'data': result['text']})
+            response = requests.put(f"{FIREBASE_URL}/{session_id}.json", json={'data': result['text']})
             if response.status_code != 200:
                 return jsonify({'error': 'Failed to save to Firebase'}), 500
+            else:
+                print("Saved the data on firebase")
         except Exception as e:
             return jsonify({'error': f'Firebase error: {str(e)}'}), 500
         

@@ -72,7 +72,7 @@ class GroqService:
                     "role": "user",
                     "content": [
                         {"type": "text", "text": message},
-                        {"type": "image_url", "image_url": {"url": 'https://m.media-amazon.com/images/I/51rCXKaVGTL.jpg'}}
+                        {"type": "image_url", "image_url": {"url": image_url}}
                     ]
                 }
             ]

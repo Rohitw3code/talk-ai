@@ -12,27 +12,42 @@ groq_service = GroqService(
     api_key="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")
 
 # Firebase Realtime Database URL
-FIREBASE_URL = "https://railseat-default-rtdb.asia-southeast1.firebasedatabase.app/talktoai/pdf-data"
+FIREBASE_URL = "https://railseat-default-rtdb.asia-southeast1.firebasedatabase.app/talktoai"
+session_id = 'test_id'
 
 @chat_bp.route('/send', methods=['POST'])
 def send_message():
     try:
         data = request.json
         message = data.get('message')
-        pdf_path = data.get('pdfPath')
+        path = data.get('path')
+
+        print("path : ",path)
 
         if not message:
             return jsonify({'error': 'No message provided'}), 400
 
         # Log incoming request
-        logger.info(f"Received chat request - Message: {message} | PDF Path: {pdf_path}")
+        logger.info(f"Received chat request - Message: {message} | PDF Path: {path}")
 
         def generate_response():
-            # Check if the pdf_path is an image
-            if pdf_path and pdf_path.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+            # Check if the path is an image
+            if path and path.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
                 logger.info("Image file detected. Using Groq Vision model.")
+                response = requests.get(f"{FIREBASE_URL}/{session_id}.json")
+                pdf_content = None
+                if response.status_code == 200:
+                    firebase_data = response.json()
+                    image_url = firebase_data.get('image_url')
+                    if image_url:
+                        logger.info("Successfully retrieved Image Url content from Firebase")
+                    else:
+                        logger.warning("No Image Url found in Firebase")
+                else:
+                    logger.error(f"Failed to retrieve from Firebase: {response.status_code}")
+
                 try:
-                    response_data = groq_service.get_vision_response(message, pdf_path)
+                    response_data = groq_service.get_vision_response(message, image_url)
                     # Stream the vision model response in chunks
                     chunk_size = 50  # Adjust chunk size as needed
                     for i in range(0, len(response_data), chunk_size):
@@ -46,7 +61,7 @@ def send_message():
             # Handle PDF content
             try:
                 logger.info("Retrieving PDF content from Firebase")
-                response = requests.get(f"{FIREBASE_URL}.json")
+                response = requests.get(f"{FIREBASE_URL}/{session_id}.json")
                 pdf_content = None
                 if response.status_code == 200:
                     firebase_data = response.json()

@@ -21,9 +21,11 @@ class PDFService:
             logger.info(text)
             logger.info("-" * 50)
 
+            print("pdf_service : file ",file)
+
             return {
                 'text': text,
-                'filename': file.filename,
+                'filename': file,
                 'pages': len(pdf.pages)
             }
 
