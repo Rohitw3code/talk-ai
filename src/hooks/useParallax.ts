@@ -1,19 +1,19 @@
 import { useCallback } from 'react';
 
-interface ParallaxLayer {
+interface ParallaxElement {
   element: HTMLElement;
   speed: number;
 }
 
-export function useParallax() {
-  const handleScroll = useCallback((layers: ParallaxLayer[]) => {
-    const scrolled = window.scrollY;
-
-    layers.forEach(({ element, speed }) => {
+export const useParallax = () => {
+  const handleScroll = useCallback((elements: ParallaxElement[]) => {
+    const scrolled = window.pageYOffset;
+    
+    elements.forEach(({ element, speed }) => {
       const yPos = -(scrolled * speed);
-      element.style.transform = `translate3d(0, ${yPos}px, 0)`;
+      element.style.transform = `translateY(${yPos}px)`;
     });
   }, []);
 
   return { handleScroll };
-}
+};

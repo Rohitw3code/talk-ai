@@ -1,27 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
-import { useTheme } from '../../hooks/useTheme';
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const [isDark, setIsDark] = useState(true); // Default to dark mode
+
+  useEffect(() => {
+    const theme = localStorage.getItem('theme');
+    
+    // Always default to dark mode unless explicitly set to light
+    if (theme === 'light') {
+      setIsDark(false);
+      document.documentElement.classList.remove('dark');
+    } else {
+      // Default to dark mode
+      setIsDark(true);
+      document.documentElement.classList.add('dark');
+      if (!theme) {
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    
+    if (newTheme) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
 
   return (
     <button
-      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-      className="relative inline-flex h-8 w-16 items-center rounded-full bg-gradient-to-r from-primary/90 to-purple-600/90 p-1 transition-colors duration-300 focus:outline-none"
+      onClick={toggleTheme}
+      className="p-2 rounded-lg bg-secondary hover:bg-accent transition-colors"
+      aria-label="Toggle theme"
     >
-      <span className="sr-only">Toggle theme</span>
-      <span
-        className={`${
-          theme === 'dark' ? 'translate-x-8' : 'translate-x-0'
-        } inline-block h-6 w-6 transform rounded-full bg-white transition-transform duration-300 ease-in-out`}
-      >
-        {theme === 'light' ? (
-          <Sun className="h-6 w-6 p-1 text-yellow-500" />
-        ) : (
-          <Moon className="h-6 w-6 p-1 text-indigo-700" />
-        )}
-      </span>
+      {isDark ? (
+        <Sun className="h-4 w-4 text-foreground" />
+      ) : (
+        <Moon className="h-4 w-4 text-foreground" />
+      )}
     </button>
   );
 }

@@ -1,47 +1,41 @@
 import React, { useState, useEffect } from 'react';
 
 const phrases = [
-  "Research Papers",
-  "Class Notes",
-  "Code Files",
-  "Legal Documents",
-  "Technical Manuals"
+  'Intelligence',
+  'Innovation',
+  'Precision',
+  'Excellence'
 ];
 
 export default function TypewriterText() {
   const [currentPhrase, setCurrentPhrase] = useState(0);
+  const [currentText, setCurrentText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
-  const [text, setText] = useState('');
-  const [delta, setDelta] = useState(200);
 
   useEffect(() => {
-    let timer = setTimeout(() => {
-      const current = phrases[currentPhrase];
+    const timeout = setTimeout(() => {
+      const fullText = phrases[currentPhrase];
       
       if (isDeleting) {
-        setText(current.substring(0, text.length - 1));
-        setDelta(100);
+        setCurrentText(fullText.substring(0, currentText.length - 1));
       } else {
-        setText(current.substring(0, text.length + 1));
-        setDelta(200);
+        setCurrentText(fullText.substring(0, currentText.length + 1));
       }
 
-      if (!isDeleting && text === current) {
+      if (!isDeleting && currentText === fullText) {
         setTimeout(() => setIsDeleting(true), 2000);
-        setDelta(300);
-      } else if (isDeleting && text === '') {
+      } else if (isDeleting && currentText === '') {
         setIsDeleting(false);
         setCurrentPhrase((prev) => (prev + 1) % phrases.length);
-        setDelta(500);
       }
-    }, delta);
+    }, isDeleting ? 50 : 100);
 
-    return () => clearTimeout(timer);
-  }, [text, isDeleting, currentPhrase, delta]);
+    return () => clearTimeout(timeout);
+  }, [currentText, isDeleting, currentPhrase]);
 
   return (
     <span className="text-primary">
-      {text}
+      {currentText}
       <span className="animate-pulse">|</span>
     </span>
   );

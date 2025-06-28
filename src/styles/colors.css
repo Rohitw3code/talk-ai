@@ -1,0 +1,63 @@
+/* Color System - Centralized color management */
+:root {
+  /* Light mode colors */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+  
+  /* Enhanced text colors for better contrast in light mode */
+  --text-primary: 222.2 84% 4.9%;
+  --text-secondary: 215.4 16.3% 35%;
+  --text-muted: 215.4 16.3% 46.9%;
+  --text-accent: 221.2 83.2% 53.3%;
+}
+
+.dark {
+  /* Dark mode colors */
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 94.1%;
+  
+  /* Enhanced text colors for dark mode */
+  --text-primary: 210 40% 98%;
+  --text-secondary: 215 20.2% 75%;
+  --text-muted: 215 20.2% 65.1%;
+  --text-accent: 217.2 91.2% 59.8%;
+}
+
+/* Text utility classes */
+.text-primary-enhanced {
+  color: hsl(var(--text-primary));
+}
+
+.text-secondary-enhanced {
+  color: hsl(var(--text-secondary));
+}
+
+.text-muted-enhanced {
+  color: hsl(var(--text-muted));
+}
+
+.text-accent-enhanced {
+  color: hsl(var(--text-accent));
+}

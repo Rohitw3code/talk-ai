@@ -38,7 +38,7 @@ export default function Footer() {
           <div className="space-y-8">
             <Logo />
             <p className="text-sm leading-6 text-muted-foreground">
-              Transform your documents into intelligent conversations with advanced AI assistance.
+              Transform your conversations with intelligent AI assistance. Experience the future of communication with TalkKAI.
             </p>
             <div className="flex space-x-6">
               {navigation.social.map((item) => (
@@ -94,7 +94,7 @@ export default function Footer() {
         
         <div className="mt-16 border-t border-foreground/10 pt-8 sm:mt-20 lg:mt-24">
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} DocuMind AI. All rights reserved.
+            &copy; {new Date().getFullYear()} TalkKAI. All rights reserved.
           </p>
         </div>
       </div>
